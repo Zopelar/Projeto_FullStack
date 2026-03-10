@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
-import '../styles/Login.css';
-import '../styles/global.css';
+import '../styles/Auth.css';
+import '../styles/Global.css';
 
 function Login(){
     const [email, setEmail] = useState('');
@@ -13,11 +13,11 @@ function Login(){
     };
 
     return(
-        <div className="paginaLogin">
-            <div className="caixaLogin">
+        <div className="paginaAuth">
+            <div className="caixaForm">
                 <h2>Faça o Login</h2>
 
-                <form onSubmit="handleLogin" className="formLogin">
+                <form onSubmit="handleLogin" className="formAuth">
 
                     <div className="inserirDados">
                         <label htmlFor="email">E-mail</label>
@@ -45,7 +45,7 @@ function Login(){
 
                     <button type='submit' className="btnPrimario">Entrar</button>
 
-                    <div className='linkCadastro'>
+                    <div className='linkRedirect'>
                         <p>Ainda não possui uma conta? <Link to="/cadastro">Cadastre-se aqui</Link></p>
                     </div>
                 </form>

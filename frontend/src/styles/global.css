@@ -4,6 +4,20 @@ body {
   background-color: #f0f2f5; 
 }
 
+.caixaForm {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 8px; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    width: 100%;
+    max-width: 400px;
+}
+
+.formAuth {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; 
+}
 
 
 .btnPrimario {
@@ -23,11 +37,10 @@ body {
     background-color: #0056b3;
 }
 
-/* Grupo de label e input */
 .inserirDados {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem; /* Espaçamento entre o texto (label) e a caixa de digitar (input) */
+  gap: 0.4rem; 
 }
 
 .inserirDados label {
@@ -36,18 +49,18 @@ body {
   font-weight: 600;
 }
 
-/* Estilização das caixas de texto */
 .inserirDados input {
   padding: 0.8rem;
   border: 1px solid #cccccc;
   border-radius: 4px;
   font-size: 1rem;
-  transition: all 0.3s ease; /* Animação suave nas mudanças de estado */
+  transition: all 0.3s ease; 
 }
 
-/* Feedback visual quando o usuário clica no input (Excelente para UX e Acessibilidade) */
+
 .inserirDados input:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
 }
+

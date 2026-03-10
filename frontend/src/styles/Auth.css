@@ -1,0 +1,33 @@
+/* arquivo css conjunto para as paginas de login e cadastro */
+
+.paginaAuth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem; 
+}
+
+.formAuth {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; 
+}
+
+.linkRedirect{
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666666;
+}
+
+.linkRedirect a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.linkRedrect a:hover {
+    text-decoration: underline;
+}
+

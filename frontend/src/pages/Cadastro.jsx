@@ -1,26 +1,40 @@
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
-import '../styles/Cadastro.css';
+import '../styles/Auth.css';
+import '../styles/Global.css';
 
 
 function Cadastro(){
     const [email, setEmail] = useState('');
     const [senha,setSenha] = useState('');
+    const [nome, setNome] = useState('');
 
-    const handleLogin = (e) => {
+    const handleCadastro = (e) => {
         e.preventDefault();
-        console.log('tentativa de login: {email, senha}');
+        console.log('tentativa de Cadastro: {email, senha, nome}');
     };
 
     return(
-        <div className="paginaLogin">
-            <div className="caixaLogin">
-                <h2>Faça o Login</h2>
+        <div className="paginaAuth">
+            <div className="caixaForm">
+                <h2>Realize seu Cadastro</h2>
 
-                <form onSubmit="handleLogin" className="formLogin">
+                <form onSubmit="handleCadastro" className="formAuth">
 
                     <div className="inserirDados">
-                        <label htmlFor="email">E-mail</label>
+                        <label htmlFor="nome">Como você gostaria de ser chamado?</label>
+                        <input type="nome"
+                            id='nome'
+                            placeholder='Digite o seu apelido'
+                            value={nome}
+                            onChange={(e) => setNome(e.target.value)}
+                            required
+                        />
+                    </div>
+                    
+                    
+                    <div className="inserirDados">
+                        <label htmlFor="email">Qual o seu melhor e-mail?</label>
                         <input type="email" 
                             id="email"
                             name="email"
@@ -32,7 +46,7 @@ function Cadastro(){
                     </div>
 
                     <div className='inserirDados'>
-                        <label htmlFor="senha">Senha</label>
+                        <label htmlFor="senha">Crie sua Senha</label>
                         <input type="senha"
                             id="senha"
                             name="senha"
@@ -43,10 +57,12 @@ function Cadastro(){
                             />
                     </div>
 
+                   {/* fazer a checagem de senha  */}
+
                     <button type='submit' className="btnPrimario">Entrar</button>
 
-                    <div className='linkCadastro'>
-                        <p>Ainda não possui uma conta? <Link to="/cadastro">Cadastre-se aqui</Link></p>
+                    <div className='linkRedirect'>
+                        <p>Já possui uma conta? <Link to="/login">Faça seu login aqui</Link></p>
                     </div>
                 </form>
             </div>
