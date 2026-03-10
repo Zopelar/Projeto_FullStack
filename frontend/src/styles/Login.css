@@ -1,0 +1,43 @@
+
+.paginaLogin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem; /* Dá um respiro em telas de celular */
+}
+
+.caixaLogin {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave para destacar do fundo */
+    width: 100%;
+    max-width: 400px;
+}
+
+
+/* Estrutura do formulário */
+.formLogin {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem; /* Espaçamento uniforme entre os campos */
+}
+
+
+.linkCadastro{
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666666;
+}
+
+.linkCadastro a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.linkCadastro a:hover {
+    text-decoration: underline;
+}
