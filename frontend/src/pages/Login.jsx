@@ -13,7 +13,7 @@ function Login(){
     };
 
     return(
-        <div className="paginaAuth">
+        <div className="containerGlobal">
             <div className="caixaForm">
                 <h2>Faça o Login</h2>
 

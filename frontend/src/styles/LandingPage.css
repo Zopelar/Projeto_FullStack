@@ -2,7 +2,6 @@
   background-color: #0d1117; 
   min-height: 100vh;
   font-family: "Poppins", sans-serif;
-  display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
@@ -16,28 +15,168 @@
   color: #ffffff;
 }
 
-.logo strong {
-  font-size: 1.5rem;
-  color: #ffffff;
-  letter-spacing: -0.5px;
+.mainSection{
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    gap: 4rem;
+    align-items: center;
 }
 
-.cabecalhoLanding {
+
+.wordSpinner {
+  --bg-color: #0d1117;
+  background-color: var(--bg-color);
+  padding: 1rem 2rem;
+  border-radius: 1.25rem;
+}
+.loader {
+  color: rgb(124, 124, 124);
+  font-weight: 500;
+  font-size: 25px;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  height: 40px;
+  padding: 10px 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-radius: 8px;
+}
+
+.words {
+  overflow: hidden;
+  position: relative;
+}
+.words::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    var(--bg-color) 10%,
+    transparent 30%,
+    transparent 70%,
+    var(--bg-color) 90%
+  );
+  z-index: 20;
+}
+
+.word {
+  display: block;
+  height: 100%;
+  padding-left: 6px;
+  color: #007bff;
+  animation: spin_4words 6s infinite;
+}
+
+@keyframes spin_4words {
+  0%, 15% {
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+  }
+
+  20% {
+    -webkit-transform: translateY(-102%);
+    transform: translateY(-102%);
+  }
+  25%, 40% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  45% {
+    -webkit-transform: translateY(-202%);
+    transform: translateY(-202%);
+  }
+  50%, 65% {
+    -webkit-transform: translateY(-200%);
+    transform: translateY(-200%);
+  }
+
+  70% {
+    -webkit-transform: translateY(-302%);
+    transform: translateY(-302%);
+  }
+  75%, 90% {
+    -webkit-transform: translateY(-300%);
+    transform: translateY(-300%);
+  }
+  95% {
+    -webkit-transform: translateY(-402%);
+    transform: translateY(-402%);
+  }
+  100% {
+    -webkit-transform: translateY(-400%);
+    transform: translateY(-400%);
+  }
+}
+
+.postsContainer{
     display: flex;
+    max-width: 1100px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.postCard{
+    position: relative;
+    background-color: #0d1117;
+    padding: 1em;
+    z-index: 5;
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    max-width: 300px;
+    transition: 200ms ease-in-out;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    
+}
+
+.postCard:hover{
+    transform: translateY(-5px);
+    border-color: #007bff;
+}
+
+.postHeader{
+    flex-direction: row;
+    color: #007bff;
+    font-size: 0.85em;
+    font-weight: 600;
+    
+}
+
+.postText{
+    margin: 0 10px 0 0;
+    white-space: pre-line;
+    color: #c0c3d7;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 4px;
+}
+
+.postFooter{
+    position: relative;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 5%;
-    border-bottom: 1px solid #30363d;
-    background-color: rgba(13, 17, 23, 0.95); 
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    border: none;
+    margin-top: 10px;
 }
 
-.landingNavbar{
+.postDate{
+    width: 100%;
+    color: #9fa4aa;
+    font-size: 12px;
+}
+
+.conviteCadastro{
     display: flex;
-    gap: 1.5rem;
-    align-items: center;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
 }
 
 .rodape {
@@ -54,4 +193,6 @@
     width: 100%;
     color:#30363d;
 }
+
+
 
