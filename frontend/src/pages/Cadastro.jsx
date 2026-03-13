@@ -15,7 +15,7 @@ function Cadastro(){
     };
 
     return(
-        <div className="paginaAuth">
+        <div className="containerGlobal">
             <div className="caixaForm">
                 <h2>Realize seu Cadastro</h2>
 
@@ -59,7 +59,7 @@ function Cadastro(){
 
                    {/* fazer a checagem de senha  */}
 
-                    <button type='submit' className="btnPrimario">Entrar</button>
+                    <button type='submit' className="btnPrimario">Finalizar Cadastro</button>
 
                     <div className='linkRedirect'>
                         <p>Já possui uma conta? <Link to="/login">Faça seu login aqui</Link></p>
