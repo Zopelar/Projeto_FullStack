@@ -22,6 +22,7 @@ function Navbar() {
                     <Link to='/cadastro' className='btnPrimario'>Cadastre-se</Link>
                 </nav>
             </header>
+        
         );
     }
     else{

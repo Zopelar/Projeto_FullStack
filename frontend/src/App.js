@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
 import LandingPage from "./pages/LandingPage";
 import Navbar from './pages/Navbar';
+import Footer from './pages/Footer';
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         /* erro 404 de pagina não encontrada */
         <Route path="*" element={<h2 style={{ textAlign: 'center', marginTop: '2rem' }}>404 - Página não encontrada</h2>} />
       </Routes>
+
+      <Footer />
     </BrowserRouter>
   );
 }

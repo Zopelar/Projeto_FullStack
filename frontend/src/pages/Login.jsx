@@ -7,9 +7,33 @@ function Login(){
     const [email, setEmail] = useState('');
     const [senha,setSenha] = useState('');
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        console.log('tentativa de login: {email, senha}');
+        //console.log('tentativa de login: {email, senha}');
+        
+        try{
+            const resposta = await fetch('http://localhost:5000/login',{
+                method:'POST',
+                headers:{'Content-Type': 'application/json'},
+                body:JSON.stringify({email, senha})
+            });
+
+            const dados = await resposta.json();
+
+            if(resposta.ok){
+                console.log('Login feito com sucesso', dados);
+                localStorage.setItem('meuToken', dados.token);
+                alert('Login realizado com sucesso!', );
+            }
+            else{
+                alert(`${dados.erro}`);
+            }
+
+        }
+        catch(erro){
+            console.error('erro de conexao no login', erro);
+            alert('Erro ao conectar com o servidor');
+        }
     };
 
     return(
@@ -17,30 +41,36 @@ function Login(){
             <div className="caixaForm">
                 <h2>Faça o Login</h2>
 
-                <form onSubmit="handleLogin" className="formAuth">
-
-                    <div className="inserirDados">
-                        <label htmlFor="email">E-mail</label>
-                        <input type="email" 
-                            id="email"
-                            name="email"
-                            placeholder="Digite o seu e-mail"
-                            value={email}
-                            onChange={(e) =>setEmail(e.target.value)}
-                            required
+                <form onSubmit={handleLogin} className="formAuth">
+                                        
+                    <div className="inserirContainer">
+                        <input 
+                        type="email"
+                        required
+                        name='email'
+                        value={email}
+                        onChange={(e)=>
+                            setEmail(e.target.value)
+                        }
+                        autocomplete='off'
+                        className='inserir'
                         />
+                        <label htmlFor="email" className='dadoSolicitado'>E-mail</label>    
                     </div>
 
-                    <div className='inserirDados'>
-                        <label htmlFor="senha">Senha</label>
-                        <input type="senha"
-                            id="senha"
-                            name="senha"
-                            placeholder='Digite sua senha'
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                            required
-                            />
+                    <div className="inserirContainer">
+                        <input 
+                        type="password"
+                        required
+                        name='senha'
+                        value={senha}
+                        onChange={(e) =>
+                            setSenha(e.target.value)
+                        }
+                        autocomplete='off'
+                        className='inserir'
+                        />
+                        <label htmlFor="password" className='dadoSolicitado'>Senha</label>    
                     </div>
 
                     <button type='submit' className="btnPrimario">Entrar</button>

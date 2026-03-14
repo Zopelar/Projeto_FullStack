@@ -8,10 +8,39 @@ function Cadastro(){
     const [email, setEmail] = useState('');
     const [senha,setSenha] = useState('');
     const [nome, setNome] = useState('');
+    const [confirmarSenha,setConfirmarSenha] = useState('');
 
-    const handleCadastro = (e) => {
+    const handleCadastro = async (e) => {
         e.preventDefault();
-        console.log('tentativa de Cadastro: {email, senha, nome}');
+        //console.log('tentativa de Cadastro: {email, senha, nome}');
+        
+        if(senha !== confirmarSenha){
+            alert('as senhas são diferentes')
+            return;
+        }
+
+        try{
+            const resposta = await fetch('http://localhost:5000/cadastro',{
+                method:'POST',
+                headers:{'Content-Type': 'application/json'},
+                body:JSON.stringify({email, senha, nome})
+            });
+
+            const dados = await resposta.json();
+
+            if(resposta.ok){
+                console.log('sucesso', dados.mensagem);
+                alert('cadastro realizado com sucesso')
+            }
+            else{
+                alert(`${dados.erro}`);
+            }
+        }
+        catch (erro) {
+            // Cai aqui se o servidor estiver desligado ou der problema na rede
+            console.error('Erro na conexão:', erro);
+            alert('Não foi possível conectar ao servidor. Verifique se ele está rodando.');
+        }
     };
 
     return(
@@ -19,45 +48,76 @@ function Cadastro(){
             <div className="caixaForm">
                 <h2>Realize seu Cadastro</h2>
 
-                <form onSubmit="handleCadastro" className="formAuth">
-
-                    <div className="inserirDados">
-                        <label htmlFor="nome">Como você gostaria de ser chamado?</label>
-                        <input type="nome"
-                            id='nome'
-                            placeholder='Digite o seu apelido'
-                            value={nome}
-                            onChange={(e) => setNome(e.target.value)}
-                            required
-                        />
-                    </div>
+                <form onSubmit={handleCadastro} className="formAuth">
                     
-                    
-                    <div className="inserirDados">
-                        <label htmlFor="email">Qual o seu melhor e-mail?</label>
-                        <input type="email" 
-                            id="email"
-                            name="email"
-                            placeholder="Digite o seu e-mail"
-                            value={email}
-                            onChange={(e) =>setEmail(e.target.value)}
-                            required
+                    <div className="inserirContainer">
+                        <p>Como você gostaria de ser chamado?</p>
+
+                        <input 
+                        type="text"
+                        required
+                        name='nome'
+                        autocomplete='off'
+                        value = {nome}
+                        onChange={(e)=>
+                            setNome(e.target.value)
+                        }
+                        className='inserir'
                         />
+                        <label htmlFor="nome" className='dadoSolicitado'>Digite seu apelido</label>    
                     </div>
 
-                    <div className='inserirDados'>
-                        <label htmlFor="senha">Crie sua Senha</label>
-                        <input type="senha"
-                            id="senha"
-                            name="senha"
-                            placeholder='Digite sua senha'
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                            required
-                            />
+                    <div className="inserirContainer">
+                        <p>Qual o seu melhor E-mail?</p>
+
+                        <input 
+                        type="email"
+                        required
+                        name='email'
+                        autocomplete='off'
+                        value={email}
+                        onChange={(e) =>
+                            setEmail(e.target.value)
+                        }
+                        className='inserir'
+                        />
+                        <label htmlFor="email" className='dadoSolicitado'>Digite seu E-mail</label>    
                     </div>
 
-                   {/* fazer a checagem de senha  */}
+                    <div className="inserirContainer">
+                        <p>Crie sua senha:</p>
+
+                        <input 
+                        type="password"
+                        required
+                        name='senha'
+                        autocomplete='off'
+                        value={senha}
+                        onChange={(e) =>
+                            setSenha(e.target.value)
+                        }
+                        className='inserir'
+                        />
+                        <label htmlFor="senha" className='dadoSolicitado'>Digite sua senha</label>    
+                    </div>
+
+                    
+                    <div className="inserirContainer">
+                        <p>Confirme sua senha:</p>
+
+                        <input 
+                        type="password"
+                        required
+                        name='senha'
+                        autocomplete='off'
+                        value={confirmarSenha}
+                        onChange={(e)=> 
+                            setConfirmarSenha(e.target.value)
+                        }
+                        className='inserir'
+                        />
+                        <label htmlFor="senha" className='dadoSolicitado'>Digite sua senha novamente</label>    
+                    </div>
 
                     <button type='submit' className="btnPrimario">Finalizar Cadastro</button>
 

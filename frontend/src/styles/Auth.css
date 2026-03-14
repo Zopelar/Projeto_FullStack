@@ -14,6 +14,11 @@
   gap: 1.2rem; 
 }
 
+.caixaForm h2{
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
 .linkRedirect{
     margin-top: 1.5rem;
     text-align: center;
@@ -31,3 +36,55 @@
     text-decoration: underline;
 }
 
+
+/*
+   Layout de inserir adaptado de: https://uiverse.io/alexruix/slippery-snail-18
+*/
+  
+.inserirContainer{
+  position: relative;
+  width: 100%;
+}
+
+.inserirContainer p{
+  font-size: 0.9rem;
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.inserir{
+  width: 100%;
+  border: solid 1.5px #9e9e9e;
+  border-radius: 1rem;
+  background: none;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #f5f5f5;
+  transition: border 150ms cubic-bezier(0.4,0,0.2,1);
+}
+
+.dadoSolicitado{
+  position: absolute;
+  left: 15px;
+  color: #e8e8e8;
+  pointer-events: none;
+  transform: translateY(1rem);
+  transition: 150ms cubic-bezier(0.4,0,0.2,1);
+}
+
+.inserir:focus, .inserir:valid{
+  outline: none;
+  border: 1.5px solid #1a73e8;
+}
+
+.inserir:focus ~ label, .input:valid ~ label {
+  transform: translateY(-50%) scale(0.8);
+  background-color: #0d1117;
+  padding: 0.2em;
+  color: #2196f3;
+}
+
+/*
+   fim do layout adaptado
+*/
