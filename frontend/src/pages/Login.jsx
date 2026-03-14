@@ -2,11 +2,14 @@ import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Auth.css';
 import '../styles/Global.css';
+import Alert from '../components/Alert';
 
 function Login(){
     const [email, setEmail] = useState('');
     const [senha,setSenha] = useState('');
     const navigate = useNavigate();
+
+    const [toastMsg, setToastMsg] = useState('');
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -22,24 +25,35 @@ function Login(){
             const dados = await resposta.json();
 
             if(resposta.ok){
-                console.log('Login feito com sucesso', dados);
+                //console.log('Login feito com sucesso', dados);
                 localStorage.setItem('meuToken', dados.token);
-                alert('Login realizado com sucesso!', );
-                navigate('/feed');
+                
+                setToastMsg('Login efetuado com sucesso!');
+
+                //alert('Login realizado com sucesso!', );
+                
+                //timeout para fazer com que o usuario consiga ver 
+                // a mensagem de login bam sucedido antes de entrar
+                // no site de fatoo
+                setTimeout(() =>{
+                    navigate('/feed');
+                }, 1000)                
             }
             else{
-                alert(`${dados.erro}`);
+                setToastMsg(`Erro: ${dados.erro}`);
             }
 
         }
         catch(erro){
             console.error('erro de conexao no login', erro);
-            alert('Erro ao conectar com o servidor');
+            setToastMsg('Erro ao conectar com o servidor!');
+            //alert('Erro ao conectar com o servidor');
         }
     };
 
     return(
         <div className="containerGlobal">
+            <Alert mensagem={toastMsg} onClose={() => setToastMsg('')}/>
             <div className="caixaForm">
                 <h2>Faça o Login</h2>
 
@@ -51,6 +65,7 @@ function Login(){
                         required
                         name='email'
                         value={email}
+                        placeholder=" "
                         onChange={(e)=>
                             setEmail(e.target.value)
                         }
@@ -66,6 +81,7 @@ function Login(){
                         required
                         name='senha'
                         value={senha}
+                        placeholder=" "
                         onChange={(e) =>
                             setSenha(e.target.value)
                         }

@@ -73,16 +73,21 @@
   transition: 150ms cubic-bezier(0.4,0,0.2,1);
 }
 
-.inserir:focus, .inserir:valid{
+.inserir:focus {
   outline: none;
   border: 1.5px solid #1a73e8;
 }
 
-.inserir:focus ~ label, .input:valid ~ label {
+.inserir:focus ~ label, 
+.inserir:not(:placeholder-shown) ~ label {
   transform: translateY(-50%) scale(0.8);
-  background-color: #0d1117;
-  padding: 0.2em;
+  background-color: #0d1117; 
+  padding: 0 0.4em;
   color: #2196f3;
+}
+
+.inserir:not(:focus):not(:placeholder-shown) ~ label {
+  color: #e8e8e8;
 }
 
 /*

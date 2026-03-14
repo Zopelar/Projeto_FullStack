@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Auth.css';
 import '../styles/Global.css';
 
@@ -9,6 +9,8 @@ function Cadastro(){
     const [senha,setSenha] = useState('');
     const [nome, setNome] = useState('');
     const [confirmarSenha,setConfirmarSenha] = useState('');
+
+    const navigate = useNavigate();
 
     const handleCadastro = async (e) => {
         e.preventDefault();
@@ -31,6 +33,7 @@ function Cadastro(){
             if(resposta.ok){
                 console.log('sucesso', dados.mensagem);
                 alert('cadastro realizado com sucesso')
+                navigate('/login');
             }
             else{
                 alert(`${dados.erro}`);
@@ -58,6 +61,7 @@ function Cadastro(){
                         required
                         name='nome'
                         autocomplete='off'
+                        placeholder=" "
                         value = {nome}
                         onChange={(e)=>
                             setNome(e.target.value)
@@ -74,6 +78,7 @@ function Cadastro(){
                         type="email"
                         required
                         name='email'
+                        placeholder=" "
                         autocomplete='off'
                         value={email}
                         onChange={(e) =>
@@ -91,6 +96,7 @@ function Cadastro(){
                         type="password"
                         required
                         name='senha'
+                        placeholder=" "
                         autocomplete='off'
                         value={senha}
                         onChange={(e) =>
@@ -110,6 +116,7 @@ function Cadastro(){
                         required
                         name='senha'
                         autocomplete='off'
+                        placeholder=" "
                         value={confirmarSenha}
                         onChange={(e)=> 
                             setConfirmarSenha(e.target.value)
