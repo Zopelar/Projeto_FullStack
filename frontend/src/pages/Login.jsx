@@ -1,11 +1,12 @@
-import React, {useState} from 'react';
-import {Link} from 'react-router-dom';
+import {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Auth.css';
 import '../styles/Global.css';
 
 function Login(){
     const [email, setEmail] = useState('');
     const [senha,setSenha] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -24,6 +25,7 @@ function Login(){
                 console.log('Login feito com sucesso', dados);
                 localStorage.setItem('meuToken', dados.token);
                 alert('Login realizado com sucesso!', );
+                navigate('/feed');
             }
             else{
                 alert(`${dados.erro}`);
