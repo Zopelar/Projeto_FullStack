@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Auth.css';
 import '../styles/Global.css';
-
+import Alert from '../components/Alert';
 
 function Cadastro(){
     const [email, setEmail] = useState('');
@@ -12,12 +12,14 @@ function Cadastro(){
 
     const navigate = useNavigate();
 
+    const [toastMsg,setToastMsg] = useState('');
+
     const handleCadastro = async (e) => {
         e.preventDefault();
         //console.log('tentativa de Cadastro: {email, senha, nome}');
         
         if(senha !== confirmarSenha){
-            alert('as senhas são diferentes')
+            setToastMsg('As senhas não coincidem!');
             return;
         }
 
@@ -31,23 +33,29 @@ function Cadastro(){
             const dados = await resposta.json();
 
             if(resposta.ok){
-                console.log('sucesso', dados.mensagem);
-                alert('cadastro realizado com sucesso')
-                navigate('/login');
+                //console.log('sucesso', dados.mensagem);
+                setToastMsg('Cadastro realizado com sucesso!');
+                
+                //1 segundo para o usuario conseguir ver a mensagem de cadastro realizado com sucesso
+                setTimeout(()=>{
+                    navigate('/login');
+                }, 1000);
+                
             }
             else{
-                alert(`${dados.erro}`);
+                setToastMsg(`${dados.erro}`);
             }
         }
         catch (erro) {
             // Cai aqui se o servidor estiver desligado ou der problema na rede
             console.error('Erro na conexão:', erro);
-            alert('Não foi possível conectar ao servidor. Verifique se ele está rodando.');
+            setToastMsg('Não foi possível conectar ao servidor. Verifique se ele está rodando.');
         }
     };
 
     return(
         <div className="containerGlobal">
+            <Alert mensagem ={toastMsg} onClose={()=> setToastMsg('')}/>
             <div className="caixaForm">
                 <h2>Realize seu Cadastro</h2>
 

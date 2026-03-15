@@ -72,10 +72,6 @@ function LandingPage() {
                 </div>
             </main>
            
-
-            <footer className='rodape'>
-                <p>© 2026 Watchu Thinkin. Todos os direitos reservados.</p>
-            </footer>
         </div>
   );
     

@@ -1,0 +1,188 @@
+.containerEspecial {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #0d1117;
+    color: #f5f5f5;
+    font-family: "Poppins", sans-serif;
+}
+
+.feedContainer { 
+    width: 100%;
+    max-width:900px;
+    border-left: 1px solid #2d333b;
+    border-right: 1px solid #2d333b;
+    min-height: 100vh;
+}
+
+.cabecalhoFeed {
+    position: sticky;
+    top: 0;
+    padding: 1rem;
+    border-bottom: 1px solid #2d333b;
+    backdrop-filter: blur(10px);
+    background-color: rgba(13, 17, 23, 0.8);
+    z-index: 10;
+}
+
+.caixaCriarPost {
+    padding: 1rem; 
+    border-bottom: 1px solid #2d333b;
+}
+
+.textArea {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+}
+
+.caixaCriarPost textarea {
+    width: 100%;
+    background-color: transparent; 
+    border: none; 
+    resize: none;
+    min-height: 60px; 
+    font-size: 1.2rem;
+    outline: none;
+    color: #f5f5f5;
+    font-family: inherit;
+    padding-top: 0.5rem;
+}
+
+
+.postArea {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 1rem;
+    border-top: 1px solid #2d333b;
+    padding-top: 0.8rem;
+}
+
+
+.feed{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.postCard {
+    width: 100%;
+    justify-content: center;
+    min-width: 898px;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid #2d333b;
+    transition: background-color 0.2s;
+    box-sizing: border-box;
+}
+
+.postCard:hover {
+    background-color: #0d1117; 
+}
+
+.conteudoPost {
+    width: 100%;
+}
+
+.infoAutor {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.95rem;
+}
+
+.infoAutor strong {
+    color: #f5f5f5;
+}
+
+.arroba, .tempo, .ponto {
+    color: #8b949e;
+}
+
+.textoPost {
+    margin: 0;
+    line-height: 1.5;
+    font-size: 1rem;
+    word-wrap: break-word; 
+}
+
+/*botao de like adaptado de: https://uiverse.io/boryanakrasteva/shy-treefrog-100 */
+.btn {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    position: relative;
+}
+
+.btn::after {
+  content: "like";
+  width: fit-content;
+  height: fit-content;
+  position: absolute;
+  font-size: 15px;
+  color: white;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s linear;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 15px;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  transition: 0.2s linear;
+}
+
+.icon path {
+  fill: white;
+  transition: 0.2s linear;
+}
+
+.btn:hover > .icon {
+  transform: scale(1.2);
+}
+
+.btn:hover > .icon path {
+  fill: red;
+}
+
+.btn:hover::after {
+  visibility: visible;
+  opacity: 1;
+  left: 25px;
+}
+
+/* fim do botao de like adaptado de: https://uiverse.io/boryanakrasteva/shy-treefrog-100 */
+
+.btn.liked .icon path {
+    fill:red;
+}
+
+.interacoes{ 
+    flex-direction: row-reverse;
+    justify-content: start;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.contadorLikes{
+    color: #f5f5f5;
+    font-weight: 500;
+    font-size: 0.8rem;
+    margin-bottom: -7px;
+}
