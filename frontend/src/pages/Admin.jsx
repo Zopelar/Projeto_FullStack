@@ -6,16 +6,20 @@ import '../styles/Admin.css';
 import Alert from '../components/Alert';
 
 
+//Painel para Administração
+//centraliza a gestao de usuarios e moderação de conteudo
+
 function Admin(){
+    // estados para mensagens de feedback e armazenamentos de dados da API
     const [toastMsg, setToastMsg] = useState('');
     const [usuarios, setUsuarios] = useState([]);
     const [posts, setPosts] = useState([]);
-
     const [emailPromocao, setEmailPromocao] = useState('');
     const [postsDenunciados,setPostsDenunciados] = useState([]);
 
     const navigate = useNavigate();
 
+    // hook de proteção de rota inicial
     useEffect(()=>{
         
         const usuarioSalvo = localStorage.getItem('usuarioLogado');
@@ -30,16 +34,22 @@ function Admin(){
         carregarDados();
     },[]);
 
+
+    //busca inicial por dados
+    //centraliza a requisição de dados que populam as listas da moderação
     const carregarDados = async () => {
         try{
+            //busca por usuarios
             const resUsuarios = await fetch('http://localhost:5000/usuarios');
             const dadosUsuarios = await resUsuarios.json();
             setUsuarios(dadosUsuarios);
 
+            //buscas por posts
             const resPosts = await fetch('http://localhost:5000/posts');
             const dadosPosts = await resPosts.json();
             setPosts(dadosPosts);
 
+            //busca por posts com denuncias
             const resDenunciados = await fetch('http://localhost:5000/posts/denunciados');
             const dadosDenunciados = await resDenunciados.json();
             setPostsDenunciados(dadosDenunciados);
@@ -49,6 +59,8 @@ function Admin(){
         }
     };
 
+
+    //promove um usuario a administrador atraves do seu email
     const handlePromover = async (e) => {
         e.preventDefault();
         
@@ -67,7 +79,7 @@ function Admin(){
 
             if(res.ok) {
                 setToastMsg('Usuário promovido a administrador com sucesso!');
-                setEmailPromocao('');
+                setEmailPromocao('');//limpa a caixa de texto
             } else {
                 setToastMsg(`Erro: ${dados.erro}`);
             }
@@ -76,6 +88,8 @@ function Admin(){
         }
     };
     
+
+    //remove um usuario permanentemente do sistema
     const deletarUsuario = async (id) => {
 
         try{
@@ -90,6 +104,8 @@ function Admin(){
         }
     }
 
+
+    //exclui posts (é utilizada pelos admins e pelo usuario que quer deletar seu proprio post)
     const deletarPost = async (id) => {
 
         try{
@@ -104,6 +120,7 @@ function Admin(){
         }
     }
 
+    //remove a flag de denuncia de um post, retirando ele da lista de denunciados
     const perdoarDenuncia = async(id) => {
         try{
             const resposta = await fetch(`http://localhost:5000/posts/${id}/perdoar`, {method:'PUT'});

@@ -1,5 +1,6 @@
 import '../styles/Footer.css';
 
+//estilização padrao para o rodapé da pagina
 function Footer(){
     return(
         <footer className='rodape'>

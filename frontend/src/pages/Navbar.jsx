@@ -1,21 +1,25 @@
 import {Link, useNavigate} from 'react-router-dom';
 import '../styles/Navbar.css';
 
+//componente navbar
 function Navbar() {
-
+    //obtem o token de ssao para definir qual a navbar exibida
     const token = localStorage.getItem('meuToken');
 
+    //obtem os dados do usuario logado
     const usuarioSalvo = localStorage.getItem('usuarioLogado');
     const user = JSON.parse(usuarioSalvo);
 
     const navigate = useNavigate();
 
+    //finaliza a sessão do usuário
     const handleLogout = () => {
         localStorage.removeItem('meuToken');
         localStorage.removeItem('usuarioLogado')
         navigate('/login');
     };
 
+    //confere se o usuario esta logado e exibe a navbar correta para cada caso
     if(!token){
         return(
             <header className="publicHeader">

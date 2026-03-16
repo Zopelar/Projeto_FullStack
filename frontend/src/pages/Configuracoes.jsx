@@ -3,23 +3,31 @@ import '../styles/Global.css';
 import '../styles/Feed.css';
 import Alert from '../components/Alert';
 import '../styles/Auth.css';
-import {Link, useNavigate} from 'react-router-dom';
 
+
+//componente responsavel pela configuração do perfil do usuario
+//permite que usuarios autenticados atualizem seus dados cadastrados
 function Configuracoes(){
+    //estados para gerenciar os inputs
     const [arroba, setArroba] = useState('');
     const [email, setEmail] = useState('');
     const [toastMsg, setToastMsg] = useState('');
 
+    //armazena os dados atuais do usuario
     const [userAtual, setUserAtual] = useState(null);
 
+    //obtem os dados da sessao atual do usuario
     useEffect(() =>{
         const usuarioSalvo = localStorage.getItem('usuarioLogado');
         setUserAtual(JSON.parse(usuarioSalvo));
     },[]);
     
+    //gerencia a atualização dos dados do usuário
+    //valida os dados e envia para api lidar com a requisição
     const handleAtualizar = async(e)=>{
         e.preventDefault();
 
+        //evita com que o usuario envie uma requisição vazia
         if(!arroba.trim() && !email.trim()){
             setToastMsg("Você precisa mudar alguma informação para poder salvar alterações!");
         }
@@ -27,6 +35,8 @@ function Configuracoes(){
         const usuarioSalvo = localStorage.getItem('usuarioLogado');
         const user = JSON.parse(usuarioSalvo);
 
+        //se um campo estiver vazio, mantem o valor do dado
+        //permite com que um usuario mude apenas uma informação
         const novoArroba = arroba.trim() !== '' ? arroba : userAtual.arroba;
         const novoEmail = email.trim() !== '' ? email : userAtual.email;
 

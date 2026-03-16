@@ -4,13 +4,21 @@ import '../styles/Auth.css';
 import '../styles/Global.css';
 import Alert from '../components/Alert';
 
+
+//componente de login
+//responsavel pela autenticação do usuario, gerenciamento do token da sessao,
+//e redirecionamento para a area logada apos a validação das credenciais
 function Login(){
+    //estados de controle de campos de entrada
     const [email, setEmail] = useState('');
     const [senha,setSenha] = useState('');
+    
     const navigate = useNavigate();
 
+    //estado para permitir alertas personalizados
     const [toastMsg, setToastMsg] = useState('');
 
+    //gerencia a submissao do form de login
     const handleLogin = async (e) => {
         e.preventDefault();
         //console.log('tentativa de login: {email, senha}');
@@ -26,12 +34,12 @@ function Login(){
 
             if(resposta.ok){
                 //console.log('Login feito com sucesso', dados);
+                
+                //armazena o token de sessao e alguns dados do usuario no navegador
                 localStorage.setItem('meuToken', dados.token);
                 localStorage.setItem('usuarioLogado', JSON.stringify(dados.usuario));
                 
                 setToastMsg('Login efetuado com sucesso!');
-
-                //alert('Login realizado com sucesso!', );
                 
                 //timeout para fazer com que o usuario consiga ver 
                 // a mensagem de login bam sucedido antes de entrar

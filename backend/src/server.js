@@ -12,8 +12,12 @@ app.use(express.json());
 //chave secreta provisoria para testes
 const jwt_secret = 'segredo123';
 
+//inicialização do banco de dados
 const db = new sqlite3.Database('./banco.db',() => {});
 
+
+// modelagem dos bancos de dados
+//cria a tabela caso nao existam
 db.run(`CREATE TABLE IF NOT EXISTS posts(
     id TEXT PRIMARY KEY,
     arroba TEXT,
@@ -31,6 +35,8 @@ db.run(`CREATE TABLE IF NOT EXISTS users(
     isAdmin INTEGER DEFAULT 0
 )`);
 
+//rota de login
+//realiza a comparação dos hashs e gera o token da sessao
 app.post('/login',(req,res) => {
     const {email, senha} = req.body;
 
@@ -40,17 +46,20 @@ app.post('/login',(req,res) => {
         if(err){
             return res.status(500).json({erro:'Erro no banco de dados.'});
         }
+        //valida a existencia do usuario
         if(!usuario){
             return res.status(401).json({erro: "Email ou senha incorretos!"});
         }
 
         try{
+            //compara as senhas criptografadas
             const senhaValida = await bcrypt.compare(senha, usuario.hashSenha);
 
             if(!senhaValida){
                 return res.status(401).json({erro: "Email ou senha incorretos!"});
             }
 
+            //gera o token da sessao com JWT e expira em 3 horas
             const tokenSessao = jwt.sign({ id: usuario.id }, jwt_secret, { expiresIn: '3h' });
 
             res.status(200).json({
@@ -70,6 +79,8 @@ app.post('/login',(req,res) => {
     });
 });
 
+//rota de cadastro
+//resposavel pelo registro de novos usuários e criptografia de senhas
 app.post('/cadastro',async(req,res) =>{
     const {id, arroba, email, senha} = req.body;
 
@@ -79,6 +90,7 @@ app.post('/cadastro',async(req,res) =>{
 
         let isAdmin;
 
+        //atribui admin ao email especificado
         if(email === 'admin@admin.com'){
             isAdmin = 1;
         }
@@ -100,6 +112,9 @@ app.post('/cadastro',async(req,res) =>{
     }
 })
 
+
+//rota de geração de posts
+//responsavel pela listagem e criação
 app.get('/posts',(req,res) => {
     db.all('SELECT * FROM posts ORDER BY rowid DESC', [], (err,rows) => {
         if (err) {
@@ -109,6 +124,8 @@ app.get('/posts',(req,res) => {
     })
 })
 
+//rota de promoção de usuario
+//resposavel por garantir poderes de admin a um usuario
 app.put('/usuarios/promover', (req,res) =>{
     const {email} = req.body;
 
@@ -123,6 +140,8 @@ app.put('/usuarios/promover', (req,res) =>{
     })
 })
 
+//rota de listagem de posts denunciados
+//lista posts denunciados
 app.get('/posts/denunciados', (req,res)=> {
     
     const query = `SELECT * FROM posts WHERE denunciado = 1`;
@@ -134,6 +153,8 @@ app.get('/posts/denunciados', (req,res)=> {
     })
 })
 
+//rota de marcação de denuncias
+//marca os posts como denunciados
 app.put('/posts/:id/denunciar', (req,res)=>{
     const idPost = req.params.id;
 
@@ -147,6 +168,8 @@ app.put('/posts/:id/denunciar', (req,res)=>{
     })
 })
 
+//rota de remoção de denuncia
+//retira a flag de denuncia do post
 app.put('/posts/:id/perdoar', (req,res) =>{
     const idPost = req.params.id;
 
@@ -160,6 +183,8 @@ app.put('/posts/:id/perdoar', (req,res) =>{
     })
 })
 
+//rota de adição de posts
+//salva um post no banco de dados
 app.post('/posts', (req,res) => {
     const {id,arroba,texto,timestamp} = req.body;
     const query = `INSERT INTO posts (id, arroba, texto, timestamp, likes) VALUES (?, ?, ?, ?, ?)`
@@ -172,6 +197,8 @@ app.post('/posts', (req,res) => {
     });
 })
 
+//rota de iteração de like
+//aumenta ou diminui o numero de likes dependendo da ação do usuario
 app.put('/posts/:id/like', (req,res)=> {
     const idPost = req.params.id;
     const {acao} = req.body;
@@ -198,12 +225,13 @@ app.put('/posts/:id/like', (req,res)=> {
     })
 })
 
+//rota de atualização de dados do usuario
+//responsavel por  alterar o arroba e/ou email do usuario
 app.put('/usuarios/:id', (req,res)=> {
     const idUsuario = req.params.id;
     const {arroba, email} =req.body;
 
-
-
+    //busca o arroba atual no banco antes de atulizar
     db.get(`SELECT arroba FROM users WHERE id = ?`, [idUsuario], (err, usuarioBanco) => {
         if (err || !usuarioBanco) {
             return res.status(404).json({ erro: 'Usuário não encontrado.' });
@@ -212,6 +240,7 @@ app.put('/usuarios/:id', (req,res)=> {
         const arrobaAntigo = usuarioBanco.arroba;
         const queryUser = `UPDATE users SET arroba = ?, email = ? WHERE id = ? `;
 
+        //atualiza os dados na tabela de usuarios
         db.run(queryUser, [arroba,email,idUsuario], function(errUser){
             if(errUser){
                 if(errUser.message.includes('UNIQUE constraint failed')){
@@ -220,9 +249,9 @@ app.put('/usuarios/:id', (req,res)=> {
             return res.status(500).json({err0: 'Erro interno'});
             }
 
+            //atualiza os posts antigos, colocando o novo arroba
             const novoArrobaFormatado = `@${arroba.toLowerCase().replace(/\s+/g, '')}`;
             const arrobaAntigoFormatado = `@${arrobaAntigo.toLowerCase().replace(/\s+/g, '')}`;
-
             const queryPosts = `UPDATE posts SET arroba = ? WHERE arroba = ?`;
 
             db.run(queryPosts, [novoArrobaFormatado, arrobaAntigoFormatado], function(errPosts) {
@@ -237,6 +266,8 @@ app.put('/usuarios/:id', (req,res)=> {
     });
 });
 
+//rota de listagem de usuarios
+//lista todos os usuarios existentes
 app.get('/usuarios', (req,res) => {
     db.all(`SELECT id, arroba, email FROM users`, [], (err,rows)=> {
         if(err){
@@ -246,6 +277,8 @@ app.get('/usuarios', (req,res) => {
     });
 });
 
+//rota de exclusao de usuarios
+//deleta um usuario do banco de dados
 app.delete('/usuarios/:id', (req,res) => {
     const idUsuario = req.params.id;
     db.run(`DELETE FROM users WHERE id=?`, [idUsuario], function(err){
@@ -256,6 +289,8 @@ app.delete('/usuarios/:id', (req,res) => {
     });
 });
 
+//rota de exclusão de post
+//responsavel pela exclusao de um post do banco de dados
 app.delete('/posts/:id', (req,res) => {
     const idPost = req.params.id;
     db.run(`DELETE FROM posts WHERE id=?`, [idPost], function(err){

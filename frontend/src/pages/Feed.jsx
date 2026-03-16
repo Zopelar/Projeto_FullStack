@@ -3,16 +3,25 @@ import '../styles/Global.css'
 import '../styles/Feed.css'
 import Alert from '../components/Alert'
 
+//componente principal do feed
+//gerencia a visualização, criação, curtidas de posts
+//funciona como a area logada(dashboard) solicitada no PDF
 function Feed(){
+    //estados para controle de novos posts
     const [novoPost, setNovoPost] = useState('');
     const [posts, setPosts] = useState([]);
-
+    
+    //estado para auxiliar alertas personalizados
     const [toastMsg,setToastMsg] = useState('');
 
+    //recupera os dados do usuario para identificação no feed
     const usuarioSalvo = localStorage.getItem('usuarioLogado');
     const user =  JSON.parse(usuarioSalvo);
+
+    //formata o arroba para exibir no feed
     const meuArroba = `@${user.arroba.toLowerCase().replace(/\s+/g, '')}`;
 
+    //hook que busca os posts para popular o feed
     useEffect(() =>{
         fetch('http://localhost:5000/posts')
         .then(resposta => resposta.json())
@@ -25,6 +34,7 @@ function Feed(){
         })
     },[])
 
+    //lida com a criação de novas publicações
     const handlePost = async (e) => {
         e.preventDefault();
 
@@ -63,10 +73,13 @@ function Feed(){
         
     }
 
+    //lida com o like do usuario em posts
+    //altera o estado visual do botao e sincroniza com o banco de dados instantaneamente
     const handleLike = async (idPost) => {
 
         let acaoDesejada;
 
+        //mapeia os posts para atualizar o contador localmente 
         const postsAtualizados = posts.map(post => {
             if(post.id === idPost){
                 if(!post.isLiked){    
@@ -90,6 +103,7 @@ function Feed(){
         }); 
         setPosts(postsAtualizados);
 
+        //sincroniza com o servidor apos ter executado o like localmente
         try{
             await fetch(`http://localhost:5000/posts/${idPost}/like`,{
                 method: 'PUT',
@@ -102,6 +116,7 @@ function Feed(){
         }
     };
 
+    //permite o autor de um post deletar o post
     const deletarPost = async (id) =>{
         const confirmar = window.confirm("Tem certeza que deseja deletar o seu post?");
         if(!confirmar) return;
@@ -117,6 +132,9 @@ function Feed(){
         }
     }
 
+    //sistema de denuncia de posts
+    //o usuario pode adicionar uma flag de denunciado no post
+    //isso leva o post para a aba de administraçao
     const denunciarPost = async (id)=>{
         const confirmar = window.confirm('Tem certeza que deseja denunciar este post?');
         if(!confirmar) return;

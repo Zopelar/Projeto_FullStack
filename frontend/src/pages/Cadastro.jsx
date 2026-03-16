@@ -4,7 +4,11 @@ import '../styles/Auth.css';
 import '../styles/Global.css';
 import Alert from '../components/Alert';
 
+
+//Componente para cadastro dos usuarios 
+//responsavel por receber, validar e enviar para a API
 function Cadastro(){
+    //estados locais para captação de dados no form
     const [email, setEmail] = useState('');
     const [senha,setSenha] = useState('');
     const [nome, setNome] = useState('');
@@ -12,12 +16,17 @@ function Cadastro(){
 
     const navigate = useNavigate();
 
+    //estado para utilização de um alerta personalizado
     const [toastMsg,setToastMsg] = useState('');
 
+
+    //gerencia o formulario de cadastro
+    // valida as informações e envia para a api
     const handleCadastro = async (e) => {
-        e.preventDefault();
+        e.preventDefault();//impede o recarregamento padrao da pagina de form
         //console.log('tentativa de Cadastro: {email, senha, nome}');
         
+        //estrutuação do objeto usuario
         const dadosUsuario = {
             id: crypto.randomUUID(),
             arroba: nome,
@@ -26,12 +35,14 @@ function Cadastro(){
 
         };
 
+        //validação de integridade
         if(senha !== confirmarSenha){
             setToastMsg('As senhas não coincidem!');
             return;
         }
 
         try{
+            //envia o novo usuario para a api lidar
             const resposta = await fetch('http://localhost:5000/cadastro',{
                 method:'POST',
                 headers:{'Content-Type': 'application/json'},

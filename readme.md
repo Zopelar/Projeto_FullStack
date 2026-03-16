@@ -4,9 +4,17 @@ Esta é uma aplicação Full Stack de um Fórum Simples inspirado no Twitter. O 
 
 # Tecnologias utilizadas:
 Frontend: React
+
+
 Backend: Node.js, Express
+
+
 Banco de Dados: SQLite
+
+
 Segurança: JWT e bcryptjs
+
+
 
 # Manual de configuração do projeto
 
@@ -31,6 +39,8 @@ Certifique-se de ter o [Node.js](https://nodejs.org/) instalado em sua máquina.
 
 
 \`npm install react-router-dom\`
+
+
 3. Inicie a aplicação:
 \`npm start\`
 
