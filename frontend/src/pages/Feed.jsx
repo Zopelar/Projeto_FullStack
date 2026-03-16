@@ -1,33 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/Global.css'
 import '../styles/Feed.css'
 
 function Feed(){
     const [novoPost, setNovoPost] = useState('');
-    
-    //posts iniciais 
-    const [posts, setPosts] = useState([
-        {id: 1, autor: 'Admin', arroba: '@admin', texto: 'Bem-vindo ao nosso novo fórum! Sinta-se em casa para compartilhar suas ideias.', timestamp: '2h', likes: 135, isLiked: false },
-        {id: 2, autor: 'João Silva', arroba: '@joaosilva', texto: 'Muito legal esse formato de microblog. Achei a interface super limpa!', timestamp: '4h' , likes: 23231, isLiked: false}
-    ]);
+    const [posts, setPosts] = useState([]);
 
-    const handlePost = (e) => {
+    useEffect(() =>{
+        fetch('http://localhost:5000/posts')
+        .then(resposta => resposta.json())
+        .then(dadosBanco => {
+            const postsFormatados = dadosBanco.map(post => ({
+                ...post,
+                isLiked: false
+            }));
+            setPosts(postsFormatados)
+        })
+    },[])
+
+    const handlePost = async (e) => {
+        e.preventDefault();
 
         if(!novoPost.trim()) return;
+        
+        const usuarioSalvo = localStorage.getItem('usuarioLogado');
+        const user = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
+
+        const arrobaUser = `@${user.arroba.toLowerCase().replace(/\s+/g, '')}`;
+
+        const data = new Date();
+        const dataFormatada = `${data.toLocaleDateString('pt-BR')} às ${data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
 
         const formatoPost = {
             id: crypto.randomUUID(),
-            autor: 'Você',
-            arroba: '@voce',
+            arroba: arrobaUser,
             texto: novoPost,
-            timestamp: 'Agora',
-            likes: 0,
-            isLiked: false
+            timestamp: dataFormatada,
         };
+        
+        try{
+            const resposta = await fetch('http://localhost:5000/posts',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formatoPost)
+            });
 
-        setPosts([formatoPost, ...posts]);
+            if(resposta.ok){
+                setPosts([{...formatoPost, likes: 0, isLiked: false}, ...posts]);
+                setNovoPost('');
+            } 
+        }
+            catch(erro){
+                console.error("erro de conexao do servidor: ", erro);
+            }
 
-        setNovoPost('');
+        
     }
 
     const handleLike = (idPost) => {
@@ -54,10 +83,10 @@ function Feed(){
     };
     
     return(
-        <div className='containerEspecial'>
+        <div className='containerGlobal'>
             <main className='feedContainer'>
                 <div className='cabecalhoFeed'>
-                    <h2>Página Inicial</h2>
+                    <h2>Feed</h2>
                 </div>
 
                 <form className='caixaCriarPost' onSubmit={handlePost}>
@@ -89,7 +118,6 @@ function Feed(){
                             
                             <div className='conteudoPost'>
                                 <div className='infoAutor'>
-                                <strong> {post.autor} </strong>
                                 <span className='arroba'> {post.arroba} </span>
                                 <span className='horario'> {post.timestamp} </span>
                                 </div>

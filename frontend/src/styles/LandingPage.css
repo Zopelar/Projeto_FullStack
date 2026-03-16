@@ -121,7 +121,7 @@
     gap: 2rem;
 }
 
-.postCard{
+.postCardLanding{
     flex-direction: column;
     position: relative;
     background-color: #0d1117;
@@ -136,7 +136,7 @@
     
 }
 
-.postCard:hover{
+.postCardLanding:hover{
     transform: translateY(-5px);
     border-color: #007bff;
 }

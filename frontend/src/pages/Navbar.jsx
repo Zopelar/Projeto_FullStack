@@ -9,6 +9,7 @@ function Navbar() {
 
     const handleLogout = () => {
         localStorage.removeItem('meuToken');
+        localStorage.removeItem('usuarioLogado')
         navigate('/login');
     };
 
@@ -40,7 +41,7 @@ function Navbar() {
 
                 <nav className="publicNavbar">
                    <Link to='/feed' style={{ color: '#fff', textDecoration: 'none' }}>Feed</Link>
-                    <Link to='/configuracoes' style={{ color: '#fff', textDecoration: 'none' }}>Meu Perfil</Link>
+                    <Link to='/configuracoes' style={{ color: '#fff', textDecoration: 'none' }}>Configurações</Link>
                     <button onClick={handleLogout} className='btnSecundario' style={{ padding: '0.4rem 1rem' }}>Sair</button>
                 </nav>
             </header>

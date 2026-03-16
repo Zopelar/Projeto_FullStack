@@ -18,6 +18,14 @@ function Cadastro(){
         e.preventDefault();
         //console.log('tentativa de Cadastro: {email, senha, nome}');
         
+        const dadosUsuario = {
+            id: crypto.randomUUID(),
+            arroba: nome,
+            email: email,
+            senha: senha
+
+        };
+
         if(senha !== confirmarSenha){
             setToastMsg('As senhas não coincidem!');
             return;
@@ -27,7 +35,7 @@ function Cadastro(){
             const resposta = await fetch('http://localhost:5000/cadastro',{
                 method:'POST',
                 headers:{'Content-Type': 'application/json'},
-                body:JSON.stringify({email, senha, nome})
+                body:JSON.stringify(dadosUsuario)
             });
 
             const dados = await resposta.json();
@@ -47,8 +55,6 @@ function Cadastro(){
             }
         }
         catch (erro) {
-            // Cai aqui se o servidor estiver desligado ou der problema na rede
-            console.error('Erro na conexão:', erro);
             setToastMsg('Não foi possível conectar ao servidor. Verifique se ele está rodando.');
         }
     };

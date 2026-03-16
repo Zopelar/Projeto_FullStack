@@ -27,6 +27,7 @@ function Login(){
             if(resposta.ok){
                 //console.log('Login feito com sucesso', dados);
                 localStorage.setItem('meuToken', dados.token);
+                localStorage.setItem('usuarioLogado', JSON.stringify(dados.usuario));
                 
                 setToastMsg('Login efetuado com sucesso!');
 

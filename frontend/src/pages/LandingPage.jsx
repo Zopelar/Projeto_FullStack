@@ -24,7 +24,7 @@ function LandingPage() {
                     </div>
                     {/*Talvez os cards rodando*/}
                     <div className='postsContainer'>
-                        <div className='postCard'>
+                        <div className='postCardLanding'>
                             <div className='postHeader'>
                                 <span className='postAuthor'>@dev_honesto</span>
                             </div>
@@ -37,7 +37,7 @@ function LandingPage() {
                             </div>
                         </div>
                     
-                        <div className='postCard'>
+                        <div className='postCardLanding'>
                             <div className='postHeader'>
                                 <span className='postAuthor'>@zopelar</span>
                             </div>
@@ -49,7 +49,7 @@ function LandingPage() {
                             </div>
                         </div>
 
-                        <div className='postCard'>
+                        <div className='postCardLanding'>
                             <div className='postHeader'>
                                 <span className='postAuthor'>@um_aleatorio_confiante</span>
                             </div>
