@@ -1,0 +1,167 @@
+import {useState,useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+import '../styles/Global.css';
+import '../styles/Feed.css';
+import '../styles/Admin.css';
+import Alert from '../components/Alert';
+
+
+function Admin(){
+    const [toastMsg, setToastMsg] = useState('');
+    const [usuarios, setUsuarios] = useState([]);
+    const [posts, setPosts] = useState([]);
+
+    const [emailPromocao, setEmailPromocao] = useState('');
+
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        
+        const usuarioSalvo = localStorage.getItem('usuarioLogado');
+        const user = JSON.parse(usuarioSalvo);
+
+        if(!user || user.isAdmin !== 1){
+            setToastMsg('área exclusiva de administradores');
+            navigate('/feed');
+            return;
+        }
+        
+        carregarDados();
+    },[]);
+
+    const carregarDados = async () => {
+        try{
+            const resUsuarios = await fetch('http://localhost:5000/usuarios');
+            const dadosUsuarios = await resUsuarios.json();
+            setUsuarios(dadosUsuarios);
+
+            const resPosts = await fetch('http://localhost:5000/posts');
+            const dadosPosts = await resPosts.json();
+            setPosts(dadosPosts);
+        }  
+        catch (erro){
+            setToastMsg('erro ao carregar dados');
+        }
+    };
+
+    const handlePromover = async (e) => {
+        e.preventDefault();
+        
+        if(!emailPromocao.trim()){
+            return setToastMsg("Digite o e-mail do usuário que deseja promover");
+        }
+
+        try {
+            const res = await fetch(`http://localhost:5000/usuarios/promover`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailPromocao })
+            });
+
+            const dados = await res.json();
+
+            if(res.ok) {
+                setToastMsg('Usuário promovido a administrador com sucesso!');
+                setEmailPromocao('');
+            } else {
+                setToastMsg(`Erro: ${dados.erro}`);
+            }
+        } catch(erro) {
+            setToastMsg('Erro ao tentar promover usuário');
+        }
+    };
+    
+    const deletarUsuario = async (id) => {
+
+        try{
+            const res = await fetch(`http://localhost:5000/usuarios/${id}`, {method: 'DELETE'});
+            if(res.ok){
+                setToastMsg('Usuário excluido!');
+                setUsuarios(usuarios.filter(user => user.id !== id));
+            }
+        }
+        catch(erro){
+            setToastMsg('erro ao tentar excluir usuário');
+        }
+    }
+
+    const deletarPost = async (id) => {
+
+        try{
+            const res = await fetch(`http://localhost:5000/posts/${id}`, {method: 'DELETE'});
+            if(res.ok){
+                setToastMsg('Post excluido!');
+                setPosts(posts.filter(post => post.id !== id));
+            }
+        }
+        catch(erro){
+            setToastMsg('erro ao tentar excluir post');
+        }
+    }
+
+    return(
+        <div className='containerGlobal'>
+            <div className='feedContainer'>
+                <div className='cabecalhoFeed'>
+                    <h2>Painel do Administrador</h2>
+                </div>
+                
+                <Alert mensagem={toastMsg} onClose={() => setToastMsg('')} />
+
+                <div className='painelAdmin'>
+                    <h3>Conceder Permissão de Administrador</h3>
+                    <form onSubmit={handlePromover} style={{ display: 'flex', gap: '1rem' }}>
+                        <input 
+                            type="email" 
+                            placeholder="E-mail do usuário" 
+                            value={emailPromocao}
+                            onChange={(e) => setEmailPromocao(e.target.value)}
+                            style={{ flex: 1, padding: '0.8rem', borderRadius: '6px', border: '1px solid #30363d', backgroundColor: '#0d1117', color: '#c9d1d9' }}
+                        />
+                        <button type="submit" className='btnPrimario' >
+                            Promover
+                        </button>
+                    </form>
+                </div>
+
+                <div className='painelAdmin'>
+                    <h3> Gerenciar Usuarios</h3>
+                    {usuarios.map(user => (
+                        <div key={user.id} className='adminCard'>
+                            <div>
+                                <strong> {user.arroba } </strong>
+                                <p> {user.email} </p>
+                            </div>
+                            <button
+                                className='btnVermelho'
+                                onClick={() => deletarUsuario(user.id)}
+                            >
+                            Excluir Usuario
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                
+                <div className='painelAdmin'>
+                    <h3> Gerenciar Posts</h3>
+                    {posts.map(post => (
+                        <div key={post.id} className='adminCard'>
+                            <div>
+                                <strong> {post.arroba } </strong>
+                                <p> {post.texto} </p>
+                            </div>
+                            <button
+                                className='btnVermelho'
+                                onClick={() => deletarPost(post.id)}
+                            >
+                            Excluir Post
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+};
+
+export default Admin;

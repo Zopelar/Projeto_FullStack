@@ -28,3 +28,16 @@
   gap: 1.5rem;
 }
 
+.btnSair{
+  background-color: transparent;
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+.btnSair:hover{
+  background-color: #da3633 ;
+}

@@ -93,6 +93,15 @@
   background-color: #0056b3;
 }
 
+.btnVermelho{
+  background-color: #da3633;
+  color: white;
+  border: 1px solid #30363d;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 1rem;
+}
 
 .inserirDados {
   display: flex;

@@ -26,7 +26,8 @@ db.run(`CREATE TABLE IF NOT EXISTS users(
     id TEXT PRIMARY KEY,
     arroba TEXT,
     email TEXT UNIQUE,
-    hashSenha TEXT
+    hashSenha TEXT,
+    isAdmin INTEGER DEFAULT 0
 )`);
 
 app.post('/login',(req,res) => {
@@ -57,7 +58,8 @@ app.post('/login',(req,res) => {
                 usuario: {
                     id: usuario.id,
                     arroba:usuario.arroba,
-                    email:usuario.email
+                    email:usuario.email,
+                    isAdmin: usuario.isAdmin
                 }
             });
         }
@@ -74,9 +76,18 @@ app.post('/cadastro',async(req,res) =>{
         //hashifica a senha com um salt de valor 10
         const hashSenha = await bcrypt.hash(senha,10);
 
-        const query = `INSERT INTO users (id, arroba, email, hashSenha) VALUES (?,?,?,?)`
+        let isAdmin;
 
-        db.run(query, [id,arroba,email,hashSenha], function(err){
+        if(email === 'admin@admin.com'){
+            isAdmin = 1;
+        }
+        else{
+            isAdmin = 0;
+        }
+
+        const query = `INSERT INTO users (id, arroba, email, hashSenha,isAdmin) VALUES (?,?,?,?,?)`
+
+        db.run(query, [id,arroba,email,hashSenha,isAdmin], function(err){
             if(err){
                 return res.status(500).json({erro:err.message});
             }
@@ -97,9 +108,23 @@ app.get('/posts',(req,res) => {
     })
 })
 
+app.put('/usuarios/promover', (req,res) =>{
+    const {email} = req.body;
+
+    const query = `UPDATE users SET isAdmin = 1 WHERE email = ?`;
+
+    db.run(query,[email], function(err){
+        if(err){
+            return res.status(500).json({erro: err.message});
+        }
+
+        res.status(200).json({mensagem:'Usuário promovido com sucesso!'})
+    })
+})
+
 app.post('/posts', (req,res) => {
     const {id,arroba,texto,timestamp} = req.body;
-    const query = `INSERT INTO posts (id, autor,arroba,texto,timestamp,likes) VALUES (?, ?, ?, ?, ?, ?)`
+    const query = `INSERT INTO posts (id, arroba, texto, timestamp, likes) VALUES (?, ?, ?, ?, ?)`
 
     db.run(query, [id,arroba,texto,timestamp,0], function(err){
         if (err) {
@@ -136,15 +161,47 @@ app.put('/usuarios/:id', (req,res)=> {
 
             const queryPosts = `UPDATE posts SET arroba = ? WHERE arroba = ?`;
 
-            db.run(queryPosts, [novaArrobaFormatada, arrobaAntigaFormatada], function(errPosts) {
+            db.run(queryPosts, [novoArrobaFormatado, arrobaAntigoFormatado], function(errPosts) {
                 if (errPosts) {
                     console.error("Erro ao atualizar os posts antigos:", errPosts);
                 }
                 
                 res.status(200).json({ mensagem: 'Usuário e posts atualizados com sucesso!' });
+        
+            });
         });
     });
 });
+
+app.get('/usuarios', (req,res) => {
+    db.all(`SELECT id, arroba, email FROM users`, [], (err,rows)=> {
+        if(err){
+            return res.status(500).json({erro: err.message });
+        }
+        res.json(rows);
+    });
+});
+
+app.delete('/usuarios/:id', (req,res) => {
+    const idUsuario = req.params.id;
+    db.run(`DELETE FROM users WHERE id=?`, [idUsuario], function(err){
+        if(err){
+            return res.status(500).json({erro: err.message});
+        }
+        res.status(200).json({mensagem:'Usuário excluido com sucesdso!'});
+    });
+});
+
+app.delete('/posts/:id', (req,res) => {
+    const idPost = req.params.id;
+    db.run(`DELETE FROM posts WHERE id=?`, [idPost], function(err){
+        if(err){
+            return res.status(500).json({erro: err.message});
+        }
+        res.status(200).json({mensagem:'Post excluido com sucesdso!'});
+    });
+});
+
 
 app.listen(5000,() => {
         console.log("servidor online na porta 5000");

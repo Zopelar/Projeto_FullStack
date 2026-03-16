@@ -5,6 +5,9 @@ function Navbar() {
 
     const token = localStorage.getItem('meuToken');
 
+    const usuarioSalvo = localStorage.getItem('usuarioLogado');
+    const user = JSON.parse(usuarioSalvo);
+
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -42,7 +45,12 @@ function Navbar() {
                 <nav className="publicNavbar">
                    <Link to='/feed' style={{ color: '#fff', textDecoration: 'none' }}>Feed</Link>
                     <Link to='/configuracoes' style={{ color: '#fff', textDecoration: 'none' }}>Configurações</Link>
-                    <button onClick={handleLogout} className='btnSecundario' style={{ padding: '0.4rem 1rem' }}>Sair</button>
+                    {user && user.isAdmin === 1 && (
+                        <Link to='/admin' style={{ color: '#fff', textDecoration: 'none'}}>
+                            Admin
+                        </Link>
+                    )}
+                    <button onClick={handleLogout} className='btnSair' style={{ padding: '0.4rem 1rem' }}>Sair</button>
                 </nav>
             </header>
         );

@@ -1,0 +1,49 @@
+/* ==========================================
+   ESTILOS DO PAINEL DO ADMINISTRADOR
+========================================== */
+
+.painelAdmin {
+    margin-top: 2rem;
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.painelAdmin h3 {
+    color: #58a6ff;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 0.5rem;
+}
+
+/* O novo cartão exclusivo do Admin */
+.adminCard {
+    display: flex;
+    justify-content: space-between; /* Texto de um lado, botão do outro */
+    align-items: center;
+    background-color: #0d1117; /* Fundo mais escuro pro cartão */
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Organiza o nome e o email um em cima do outro */
+.adminCard div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.adminCard strong {
+    font-size: 1.1rem;
+    color: #c9d1d9;
+}
+
+.adminCard p {
+    font-size: 0.9rem;
+    color: #8b949e;
+    margin: 0;
+}
