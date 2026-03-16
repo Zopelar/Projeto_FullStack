@@ -109,6 +109,43 @@ app.post('/posts', (req,res) => {
     });
 })
 
+app.put('/usuarios/:id', (req,res)=> {
+    const idUsuario = req.params.id;
+    const {arroba, email} =req.body;
+
+
+
+    db.get(`SELECT arroba FROM users WHERE id = ?`, [idUsuario], (err, usuarioBanco) => {
+        if (err || !usuarioBanco) {
+            return res.status(404).json({ erro: 'Usuário não encontrado.' });
+        }
+
+        const arrobaAntigo = usuarioBanco.arroba;
+        const queryUser = `UPDATE users SET arroba = ?, email = ? WHERE id = ? `;
+
+        db.run(queryUser, [arroba,email,idUsuario], function(errUser){
+            if(errUser){
+                if(errUser.message.includes('UNIQUE constraint failed')){
+                    return res.status(400).json({erro: 'Este email ja está sendo utilizado!'})
+                }
+            return res.status(500).json({err0: 'Erro interno'});
+            }
+
+            const novoArrobaFormatado = `@${arroba.toLowerCase().replace(/\s+/g, '')}`;
+            const arrobaAntigoFormatado = `@${arrobaAntigo.toLowerCase().replace(/\s+/g, '')}`;
+
+            const queryPosts = `UPDATE posts SET arroba = ? WHERE arroba = ?`;
+
+            db.run(queryPosts, [novaArrobaFormatada, arrobaAntigaFormatada], function(errPosts) {
+                if (errPosts) {
+                    console.error("Erro ao atualizar os posts antigos:", errPosts);
+                }
+                
+                res.status(200).json({ mensagem: 'Usuário e posts atualizados com sucesso!' });
+        });
+    });
+});
+
 app.listen(5000,() => {
         console.log("servidor online na porta 5000");
     }
