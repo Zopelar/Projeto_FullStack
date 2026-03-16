@@ -1,6 +1,3 @@
-/* ==========================================
-   ESTILOS DO PAINEL DO ADMINISTRADOR
-========================================== */
 
 .painelAdmin {
     margin-top: 2rem;
@@ -18,19 +15,17 @@
     padding-bottom: 0.5rem;
 }
 
-/* O novo cartão exclusivo do Admin */
 .adminCard {
     display: flex;
-    justify-content: space-between; /* Texto de um lado, botão do outro */
+    justify-content: space-between; 
     align-items: center;
-    background-color: #0d1117; /* Fundo mais escuro pro cartão */
+    background-color: #0d1117; 
     border: 1px solid #30363d;
     border-radius: 6px;
     padding: 1rem 1.5rem;
     margin-bottom: 1rem;
 }
 
-/* Organiza o nome e o email um em cima do outro */
 .adminCard div {
     display: flex;
     flex-direction: column;
@@ -46,4 +41,15 @@
     font-size: 0.9rem;
     color: #8b949e;
     margin: 0;
+}
+
+.adminCard .acoesDenuncia{
+    display: flex;
+    flex-direction: row;
+    gap: 0.1rem;
+    
+}
+
+.adminCard .acoesDenuncia button{
+    width: 110px;
 }

@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import '../styles/Global.css'
 import '../styles/Feed.css'
+import Alert from '../components/Alert'
 
 function Feed(){
     const [novoPost, setNovoPost] = useState('');
     const [posts, setPosts] = useState([]);
+
+    const [toastMsg,setToastMsg] = useState('');
+
+    const usuarioSalvo = localStorage.getItem('usuarioLogado');
+    const user =  JSON.parse(usuarioSalvo);
+    const meuArroba = `@${user.arroba.toLowerCase().replace(/\s+/g, '')}`;
 
     useEffect(() =>{
         fetch('http://localhost:5000/posts')
@@ -22,9 +29,6 @@ function Feed(){
         e.preventDefault();
 
         if(!novoPost.trim()) return;
-        
-        const usuarioSalvo = localStorage.getItem('usuarioLogado');
-        const user = usuarioSalvo ? JSON.parse(usuarioSalvo) : null;
 
         const arrobaUser = `@${user.arroba.toLowerCase().replace(/\s+/g, '')}`;
 
@@ -59,10 +63,14 @@ function Feed(){
         
     }
 
-    const handleLike = (idPost) => {
+    const handleLike = async (idPost) => {
+
+        let acaoDesejada;
+
         const postsAtualizados = posts.map(post => {
             if(post.id === idPost){
                 if(!post.isLiked){    
+                    acaoDesejada = 'like';
                     return{
                         ...post,
                         isLiked: true,
@@ -70,6 +78,7 @@ function Feed(){
                     };
                 }
                 else{
+                    acaoDesejada = 'unlike';
                     return{
                         ...post,
                         isLiked: false,
@@ -80,10 +89,51 @@ function Feed(){
             return post;
         }); 
         setPosts(postsAtualizados);
+
+        try{
+            await fetch(`http://localhost:5000/posts/${idPost}/like`,{
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ acao: acaoDesejada })
+            })
+        }
+        catch(erro){
+            setToastMsg('Erro interno ao salvar like');
+        }
     };
+
+    const deletarPost = async (id) =>{
+        const confirmar = window.confirm("Tem certeza que deseja deletar o seu post?");
+        if(!confirmar) return;
+
+        try{
+            const resposta = await fetch(`http://localhost:5000/posts/${id}`, {method: 'DELETE'});
+            if(resposta.ok){
+                setPosts(posts.filter(post => post.id !==id));
+            }
+        }
+        catch(erro){
+            setToastMsg('erro interno ao apagar seu post');
+        }
+    }
+
+    const denunciarPost = async (id)=>{
+        const confirmar = window.confirm('Tem certeza que deseja denunciar este post?');
+        if(!confirmar) return;
+
+        try{
+            const resposta = await fetch(`http://localhost:5000/posts/${id}/denunciar`, {method: 'PUT'});
+            if(resposta.ok){
+                setToastMsg('Post Denunciado! Os moderadores vão analisar o post')
+            }
+        }catch(erro){
+            setToastMsg('erro interno ao denunciar post');
+        }
+    }
     
     return(
         <div className='containerGlobal'>
+            <Alert mensagem ={toastMsg} onClose={()=> setToastMsg('')}/>
             <main className='feedContainer'>
                 <div className='cabecalhoFeed'>
                     <h2>Feed</h2>
@@ -118,9 +168,23 @@ function Feed(){
                             
                             <div className='conteudoPost'>
                                 <div className='infoAutor'>
-                                <span className='arroba'> {post.arroba} </span>
-                                <span className='horario'> {post.timestamp} </span>
+                                <div>
+                                    <span className='arroba'> {post.arroba} </span>
+                                    <span className='horario'> {post.timestamp} </span>
                                 </div>
+
+                                
+                                    {post.arroba === meuArroba ? (
+                                        <button onClick={() => deletarPost(post.id)} className='btnVermelho'>
+                                            Apagar
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => denunciarPost(post.id)} className='btnVermelho' >
+                                            Denunciar
+                                        </button>
+                                    )}
+                                </div>
+                                
                                 <p className='textoPost'> {post.texto} </p>
                                 
                                 <div className='interacoes'>

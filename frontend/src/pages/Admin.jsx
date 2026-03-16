@@ -12,6 +12,7 @@ function Admin(){
     const [posts, setPosts] = useState([]);
 
     const [emailPromocao, setEmailPromocao] = useState('');
+    const [postsDenunciados,setPostsDenunciados] = useState([]);
 
     const navigate = useNavigate();
 
@@ -38,6 +39,10 @@ function Admin(){
             const resPosts = await fetch('http://localhost:5000/posts');
             const dadosPosts = await resPosts.json();
             setPosts(dadosPosts);
+
+            const resDenunciados = await fetch('http://localhost:5000/posts/denunciados');
+            const dadosDenunciados = await resDenunciados.json();
+            setPostsDenunciados(dadosDenunciados);
         }  
         catch (erro){
             setToastMsg('erro ao carregar dados');
@@ -99,6 +104,19 @@ function Admin(){
         }
     }
 
+    const perdoarDenuncia = async(id) => {
+        try{
+            const resposta = await fetch(`http://localhost:5000/posts/${id}/perdoar`, {method:'PUT'});
+            if(resposta.ok){
+                setToastMsg('Denúncia ignorada com sucesso!');
+                setPostsDenunciados(postsDenunciados.filter(post => post.id !== id));
+            }
+        }
+        catch(erro){
+            setToastMsg('erro interno ao perdoar denúncia');
+        }
+    }
+
     return(
         <div className='containerGlobal'>
             <div className='feedContainer'>
@@ -143,22 +161,42 @@ function Admin(){
                 </div>
                 
                 <div className='painelAdmin'>
-                    <h3> Gerenciar Posts</h3>
-                    {posts.map(post => (
-                        <div key={post.id} className='adminCard'>
-                            <div>
-                                <strong> {post.arroba } </strong>
-                                <p> {post.texto} </p>
+                    <h3>Posts Denunciados</h3>
+                    {postsDenunciados.length === 0 ?(
+                        <p> Nenhuma denuncia para analisar </p>
+                    ) : (
+                        postsDenunciados.map(post => (
+                            <div key={post.id} className='adminCard'>
+                                <div>
+                                    <strong>{post.arroba}</strong>
+                                    <p>{post.texto}</p>
+                                </div>
+
+                                <div className='acoesDenuncia'>
+                                    <button
+                                        className='btnSecundario'
+                                        onClick={()=> {perdoarDenuncia(post.id);
+                                        setPostsDenunciados(postsDenunciados.filter(p => p.id !== post.id));
+                                        }}
+                                    >   
+                                        Ignorar
+                                    </button>
+
+                                    <button
+                                        className='btnVermelho'
+                                        onClick={() => {
+                                            deletarPost(post.id);
+                                            setPostsDenunciados(postsDenunciados.filter(p => p.id !== post.id));
+                                        }}
+                                    >
+                                        Apagar
+                                    </button>
+                                </div>
                             </div>
-                            <button
-                                className='btnVermelho'
-                                onClick={() => deletarPost(post.id)}
-                            >
-                            Excluir Post
-                            </button>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
+                
             </div>
         </div>
     )

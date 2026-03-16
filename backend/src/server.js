@@ -19,7 +19,8 @@ db.run(`CREATE TABLE IF NOT EXISTS posts(
     arroba TEXT,
     texto TEXT,
     timestamp TEXT,
-    likes INTEGER DEFAULT 0
+    likes INTEGER DEFAULT 0,
+    denunciado INTEGER DEFAULT 0
 )`);
 
 db.run(`CREATE TABLE IF NOT EXISTS users(
@@ -122,6 +123,43 @@ app.put('/usuarios/promover', (req,res) =>{
     })
 })
 
+app.get('/posts/denunciados', (req,res)=> {
+    
+    const query = `SELECT * FROM posts WHERE denunciado = 1`;
+    db.all(query, [], (err,rows) => {
+        if(err){
+            return res.status(500).json({erro:err.message});
+        }
+        res.json(rows);
+    })
+})
+
+app.put('/posts/:id/denunciar', (req,res)=>{
+    const idPost = req.params.id;
+
+    const query = `UPDATE posts SET denunciado = 1 WHERE id = ?`;
+
+    db.run(query,[idPost], function(err){
+        if(err){
+            return res.status( 500).json({erro:err.message});
+        }
+        res.status(200).json({mensagem:'Post denunciado com sucesso!'});
+    })
+})
+
+app.put('/posts/:id/perdoar', (req,res) =>{
+    const idPost = req.params.id;
+
+    const query = `UPDATE posts SET denunciado = 0 WHERE id = ?`;
+
+    db.run(query,[idPost], function(err){
+        if(err){
+            return res.status( 500).json({erro:err.message});
+        }
+        res.status(200).json({mensagem:'denuncia ignoradacom sucesso!'});
+    })
+})
+
 app.post('/posts', (req,res) => {
     const {id,arroba,texto,timestamp} = req.body;
     const query = `INSERT INTO posts (id, arroba, texto, timestamp, likes) VALUES (?, ?, ?, ?, ?)`
@@ -132,6 +170,32 @@ app.post('/posts', (req,res) => {
         }
         res.status(201).json({ mensagem: 'Post salvo com sucesso!', id: id });
     });
+})
+
+app.put('/posts/:id/like', (req,res)=> {
+    const idPost = req.params.id;
+    const {acao} = req.body;
+
+    let query = '';
+
+    if(acao ==='like'){
+        query =`UPDATE posts SET likes = likes + 1 WHERE id =?`; 
+    }
+    else if(acao == 'unlike'){
+        query =`UPDATE posts SET likes = likes - 1 WHERE id =?`;
+    }
+    else{
+        return res.status(400).json({erro: 'Ação nao reconhecida'})
+    }
+
+    db.run(query,[idPost], function(err){
+        if(err){
+            return res.status(500).json({erro: err.message});
+        }
+        
+        if(acao ==='like') res.status(200).json({mensagem: 'Publicação curtida'});
+        else if(acao ==='unlike') res.status(200).json({mensagem: 'Like retirado da publicação!'})
+    })
 })
 
 app.put('/usuarios/:id', (req,res)=> {
